@@ -1,0 +1,16 @@
+{
+  "name": "twitter-thread-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "set NODE_ENV=debug && node src/index.js"
+  },
+  "repository": "https://github.com/pitroldev/twitter-thread-bot.git",
+  "author": "Petro Cardoso <petrolcds@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "oauth-1.0a": "^2.2.6"
+  }
+}

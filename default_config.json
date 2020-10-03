@@ -1,0 +1,18 @@
+{
+  "settings": {
+    "keyword": "thread",
+    "replyText": "hmmm... salvei!",
+    "lang": "pt",
+    "minRTs": 250,
+    "minFavs": 2500,
+    "intervalMin": 31,
+    "tweetFilters": ["BTS"],
+    "usernameFilters": ["bolsonaro"]
+  },
+  "auth": {
+    "api_key": "",
+    "api_secret": "",
+    "access_token": "",
+    "access_token_secret": ""
+  }
+}
