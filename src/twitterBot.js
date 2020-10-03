@@ -86,6 +86,7 @@ class TwitterBot {
 
       this.countRepliesAndRTs += 1;
 
+      console.log(`Actual count: ${this.countRepliesAndRTs} Replies and RTs`);
       return true;
     } catch (err) {
       console.log("reply error");
@@ -104,6 +105,7 @@ class TwitterBot {
 
       this.countRepliesAndRTs += 1;
 
+      console.log(`Actual count: ${this.countRepliesAndRTs} Replies and RTs`);
       return response.data.retweeted;
     } catch (err) {
       console.log("retweet error");
@@ -120,7 +122,7 @@ class TwitterBot {
 
       const response = await this.requestApi(request_data);
 
-      return response.data.faved;
+      return response.data.favorited;
     } catch (err) {
       console.log("favorite error");
       return false;
@@ -133,7 +135,7 @@ class TwitterBot {
 
       const { keyword, minRTs, minFavs, lang } = this;
 
-      const count = 50;
+      const count = 100;
 
       const request_data = {
         url: `https://api.twitter.com/1.1/search/tweets.json?q=${keyword}%20min_faves%3A${minFavs}%20min_retweets%3A${minRTs}%20lang%3A${lang}&count=${count}`,
@@ -186,8 +188,6 @@ class TwitterBot {
           console.log(`Blocked @${screen_name}:`, blockReason);
         }
       });
-
-      console.log(`Actual count: ${this.countRepliesAndRTs} Replies and RTs`);
     } catch (err) {
       console.log("searchTweets error", err);
     }
