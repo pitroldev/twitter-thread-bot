@@ -7,5 +7,8 @@ const ThreadBot = new TwitterBot(config.settings, config.auth);
 ThreadBot.searchTweets();
 
 if (!process.env.NODE_ENV) {
-  setInterval(ThreadBot.searchTweets, config.settings.intervalMin * 60 * 1000);
+  setInterval(
+    () => ThreadBot.searchTweets(),
+    config.settings.intervalMin * 60 * 1000
+  );
 }

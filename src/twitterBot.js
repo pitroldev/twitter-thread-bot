@@ -2,6 +2,8 @@ const axios = require("axios");
 const crypto = require("crypto");
 const OAuth = require("oauth-1.0a");
 
+const parser = require("./utils/parser");
+
 class TwitterBot {
   constructor(settings, auth) {
     this.keyword = settings.keyword;
@@ -86,7 +88,11 @@ class TwitterBot {
 
       this.countRepliesAndRTs += 1;
 
-      console.log(`Actual count: ${this.countRepliesAndRTs} Replies and RTs`);
+      console.log(
+        `${parser.parseTime(new Date())}: Actual count: ${
+          this.countRepliesAndRTs
+        } Replies and RTs`
+      );
       return true;
     } catch (err) {
       console.log("reply error");
@@ -105,7 +111,11 @@ class TwitterBot {
 
       this.countRepliesAndRTs += 1;
 
-      console.log(`Actual count: ${this.countRepliesAndRTs} Replies and RTs`);
+      console.log(
+        `${parser.parseTime(new Date())}: Actual count: ${
+          this.countRepliesAndRTs
+        } Replies and RTs`
+      );
       return response.data.retweeted;
     } catch (err) {
       console.log("retweet error");
@@ -131,14 +141,18 @@ class TwitterBot {
 
   async searchTweets() {
     try {
-      console.log("Searching for threads...");
+      console.log(`${parser.parseTime(new Date())}: Searching for threads...`);
 
       const { keyword, minRTs, minFavs, lang } = this;
+
+      const keyQuery = encodeURIComponent(
+        `${keyword} -${this.tweetFilters.join(" -")}`
+      );
 
       const count = 100;
 
       const request_data = {
-        url: `https://api.twitter.com/1.1/search/tweets.json?q=${keyword}%20min_faves%3A${minFavs}%20min_retweets%3A${minRTs}%20lang%3A${lang}&count=${count}`,
+        url: `https://api.twitter.com/1.1/search/tweets.json?q=${keyQuery}%20min_faves%3A${minFavs}%20min_retweets%3A${minRTs}%20lang%3A${lang}&count=${count}`,
         method: "GET",
       };
 
@@ -149,11 +163,15 @@ class TwitterBot {
       if (pastMinutes >= 180) {
         this.currentDate = new Date();
         this.countRepliesAndRTs = 0;
-        console.log(`Past ${pastMinutes}mins, reseting countRepliesAndRTs`);
+        console.log(
+          `${parser.parseTime(new Date())}: Past ${Math.round(
+            pastMinutes
+          )}mins, reseting countRepliesAndRTs`
+        );
       }
 
       statuses.map(async (tweet) => {
-        const { id_str, text } = tweet;
+        const { id_str } = tweet;
 
         const res = await this.getTweet(id_str);
         const { retweeted, favorited } = res.data;
@@ -168,24 +186,23 @@ class TwitterBot {
           blocked && (blockReason = filter);
         });
 
-        this.tweetFilters.map((filter) => {
-          const regex = new RegExp(filter, "gi");
-          blocked = text.match(regex);
-          blocked && (blockReason = filter);
-        });
-
         if (!blocked) {
           if (!favorited) {
             const FAVres = await this.favorite(id_str);
-            FAVres && console.log("Faved:", id_str);
+            FAVres &&
+              console.log(`${parser.parseTime(new Date())}: Faved`, id_str);
           }
 
           if (!retweeted && this.countRepliesAndRTs < 300) {
             const RTres = await this.retweet(id_str);
-            RTres && console.log("Retweeted:", id_str);
+            RTres &&
+              console.log(`${parser.parseTime(new Date())}: Retweeted`, id_str);
           }
         } else {
-          console.log(`Blocked @${screen_name}:`, blockReason);
+          console.log(
+            `${parser.parseTime(new Date())}: Blocked @${screen_name} -`,
+            blockReason
+          );
         }
       });
     } catch (err) {
